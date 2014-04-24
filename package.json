@@ -1,0 +1,22 @@
+{
+  "name": "PKRBalanceAPI",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "api.js",
+  "dependencies": {
+    "cheerio": "~0.15.0",
+    "http": "~0.0.0",
+    "phantom": "~0.5.7"
+  },
+  "devDependencies": {
+    "phantom": "~0.5.7",
+    "url": "~0.10.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
