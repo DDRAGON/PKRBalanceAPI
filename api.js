@@ -81,14 +81,24 @@ getBalance = function() {
 				function() {
 					config.page = page;
 					console.log('trying login....');
-					page.evaluate(function() {
-						document.getElementById('_ctl0_txtUserName').value = 'name';
-						document.getElementById('_ctl0_txtPassword').value = 'pass';
-						document.getElementById("_ctl0_btnLogOn").click();
-						setTimeout(function() {
-							config.page.open('https://accounts.pkr.com/ViewDetails.aspx');
-						}, 2*1000);
-					});
+					/*
+					setTimeout(function() {
+						page.open('https://accounts.pkr.com/ViewDetails.aspx');
+					}, 12*1000);
+					*/
+					setTimeout(function() {
+						page.evaluate(function() {
+							document.getElementById('_ctl0_txtUserName').value = 'name';
+							document.getElementById('_ctl0_txtPassword').value = 'pass';
+							document.getElementById('_ctl0_btnLogOn').click();
+							// document.querySelector('form').submit(); // 次ページヘ
+							/*
+							 setTimeout(function() {
+							 config.page.open('https://accounts.pkr.com/ViewDetails.aspx');
+							 }, 2*1000);
+							 */
+							});
+					}, 2*1000);
 				},
 				function() {
 					page.evaluate(function() {
