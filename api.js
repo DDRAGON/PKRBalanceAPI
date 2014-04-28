@@ -16,16 +16,17 @@ var frontObj = {
 	text: ''
 };
 
-config = {exitFlag: false};
+config = {};
+config.exitFlag = false;
 
 
-console.log('this server is listening port: ' + PORT);
 http.createServer(function (req, res) {
 	if(req.method == 'GET') {
 		sendResponseToFront(req, res); // フロント部にレスポンスを返している。
 	}
 
 }).listen(PORT);
+console.log('this server is listening port: ' + PORT);
 
 getBalance = function() {
 	config.exitFlag = true;
@@ -79,56 +80,52 @@ getBalance = function() {
 					page.open('https://accounts.pkr.com/LogOn.aspx?RedirectUrl=https://accounts.pkr.com/default.aspx'); // ログインページヘ
 				},
 				function() {
-					config.page = page;
 					console.log('trying login....');
-					/*
-					setTimeout(function() {
-						page.open('https://accounts.pkr.com/ViewDetails.aspx');
-					}, 12*1000);
-					*/
 					setTimeout(function() {
 						page.evaluate(function() {
+							return document;
+						}, function(document){
 							document.getElementById('_ctl0_txtUserName').value = 'name';
 							document.getElementById('_ctl0_txtPassword').value = 'pass';
 							document.getElementById('_ctl0_btnLogOn').click();
-							// document.querySelector('form').submit(); // 次ページヘ
-							/*
-							 setTimeout(function() {
-							 config.page.open('https://accounts.pkr.com/ViewDetails.aspx');
-							 }, 2*1000);
-							 */
-							});
-					}, 2*1000);
+						});
+					}, 5*1000);
 				},
 				function() {
-					page.evaluate(function() {
-						return document.getElementsByTagName('html')[0].innerHTML;
-					}, function(html) {
-						// cheerio でパースしてユーザ名とポイントを取得
-						var $ = cheerio.load(html);
-						var balance = $('a#_ctl0_lnkRealMoneyAccount').text();
-						balance = Number(balance.substr(1));
-						console.log('balance = ' + balance);
-						frontObj.beforeBalance = frontObj.balance;
-						frontObj.balance = balance;
-						frontObj.difference = Math.floor((balance - frontObj.beforeBalance)*100)/100;
-						if (frontObj.difference < 0) {
-							frontObj.difference = '-$' + frontObj.difference;
-						} else {
-							frontObj.difference = '+$' + frontObj.difference;
-						}
-						frontObj.totalDifference = Math.floor((balance - frontObj.deposit)*100)/100;
-						if (frontObj.totalDifference < 0) {
-							frontObj.totalDifference = '-$' + frontObj.totalDifference;
-						} else {
-							frontObj.totalDifference = '+$' + frontObj.totalDifference;
-						}
-						frontObj.text = '$'+frontObj.balance+'('+frontObj.difference+') total: '+frontObj.totalDifference;
+					console.log('Lets get balance!');
+					setTimeout(function() {
+						page.evaluate(function() {
+							return document.getElementsByTagName('html')[0].innerHTML;
+						}, function(html) {
+							// cheerio でパースしてユーザ名とポイントを取得
+							var $ = cheerio.load(html);
+							var balance = $('a#_ctl0_lnkRealMoneyAccount').text();
+							balance = Number(balance.substr(1));
+							console.log('balance = ' + balance);
 
-						// お忘れなきよう (-人-)
-						config.exitFlag = false;
-						ph.exit();
-					});
+							if (frontObj.balance != balance) { // 変更のないときは更新しない。
+								frontObj.beforeBalance = frontObj.balance;
+								frontObj.balance = balance;
+								frontObj.difference = Math.floor((balance - frontObj.beforeBalance)*100)/100;
+								if (frontObj.difference < 0) {
+									frontObj.difference = '-$' + frontObj.difference;
+								} else {
+									frontObj.difference = '+$' + frontObj.difference;
+								}
+								frontObj.totalDifference = Math.floor((balance - frontObj.deposit)*100)/100;
+								if (frontObj.totalDifference < 0) {
+									frontObj.totalDifference = '-$' + frontObj.totalDifference;
+								} else {
+									frontObj.totalDifference = '+$' + frontObj.totalDifference;
+								}
+								frontObj.text = '$'+frontObj.balance+'('+frontObj.difference+') total: '+frontObj.totalDifference;
+							}
+
+							// お忘れなきよう (-人-)
+							config.exitFlag = false;
+							ph.exit();
+						});
+					}, 2*1000);
 				}
 			]).next();
 
@@ -139,7 +136,7 @@ getBalance = function() {
 getBalance();
 setInterval(function() {
 	getBalance();
-}, 2*60*1000);
+}, 3*60*1000);
 
 
 function sendResponseToFront(req, res) {
