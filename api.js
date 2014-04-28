@@ -83,8 +83,6 @@ getBalance = function() {
 					console.log('trying login....');
 					setTimeout(function() {
 						page.evaluate(function() {
-							return document;
-						}, function(document){
 							document.getElementById('_ctl0_txtUserName').value = 'name';
 							document.getElementById('_ctl0_txtPassword').value = 'pass';
 							document.getElementById('_ctl0_btnLogOn').click();
