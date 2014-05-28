@@ -131,9 +131,17 @@ getBalance = function() {
 	});
 }
 
-getBalance();
-setInterval(function() {
+try{
 	getBalance();
+} catch(e){
+	getBalance();
+}
+setInterval(function() {
+	try{
+		getBalance();
+	} catch(e){
+		getBalance();
+	}
 }, 3*60*1000);
 
 
